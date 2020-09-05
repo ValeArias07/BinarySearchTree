@@ -18,14 +18,16 @@ public class BinarySearchTree <K extends Comparable<K>, T>{
 					 addRecursive(current.getRightNode(), key, value);
 				}else {
 					current.setRightNode(new BSTNode <K,T> (value, key));
-					height++;
+					height(current, "R");
+					weight++;
 				}
 			}else {
 				if(current.getLeftNode()!=null) {
 				    addRecursive(current.getLeftNode(), key, value); 
 				}else {
 					current.setLeftNode(new BSTNode <K,T> (value ,key));
-					height++;
+					height(current, "L");
+					weight++;
 
 				}
 			}
@@ -37,7 +39,7 @@ public class BinarySearchTree <K extends Comparable<K>, T>{
 			addRecursive(root, key, value);
 		else 
 			root= new BSTNode <K,T>(value, key);
-			height++;
+			weight++;
 	}
 	
 	public boolean update(K currentKey, K newKey) {
@@ -62,13 +64,66 @@ public class BinarySearchTree <K extends Comparable<K>, T>{
 		}
 		return current;
 	}
+
+	public BSTNode<K,T> delete(K key){
+		BSTNode<K,T>found=search(key);
+		BSTNode<K,T> aux=null;
+		
+		if(found!=null) {
+			aux=found;
+			if(found.getLeftNode()==null && found.getRightNode()==null) {
+				found=null;
+			}else if(found.getLeftNode()!=null && found.getRightNode()!=null) {
+				
+				BSTNode<K,T> smallest=smallest(found);
+				if(smallest.getRightNode()==null) {
+					found=smallest;
+				}else {
+					BSTNode<K,T> biggest= bigest(found);
+					if(biggest.getLeftNode()==null) {
+						found=biggest;
+					}
+				}
+				
+			}else if (found.getLeftNode()!=null){
+				found=found.getLeftNode();
+			}else {
+				found=found.getRightNode();
+			}
+		}
+		return aux;
+	}
+	
+	public BSTNode<K,T> bigest(BSTNode<K,T> current){
+		
+		if(current.getRightNode()!=null) {
+			bigest(current.getRightNode());
+		}
+		return current;
+	} 
+	
+	public BSTNode<K,T> smallest(BSTNode<K,T> current){
+		
+		if(current.getLeftNode()!=null) {
+			smallest(current.getLeftNode());
+		}
+		return current;
+	}
 	
 	public int getWeight() {
 		return weight;
 	}
 	
-	public int getHeight() {
-		return height;
+	public void height(BSTNode<K,T> current, String position) {
+		if(position.equals("R")) {
+			if(current.getLeftNode()==null) {
+				height++;
+			}
+		}else {
+			if(current.getRightNode()==null) {
+				height++;
+			}
+		}
 	}
 	
 	public String inOrder(BSTNode<K,T> current, String txt) {
